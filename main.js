@@ -1,4 +1,4 @@
-class Spy {
+class Bouncer {
   constructor(selector, cb, topOffset) {
     this.offsets = [];
     this.windowOffset, this.windowBuffer = window.pageYOffset;

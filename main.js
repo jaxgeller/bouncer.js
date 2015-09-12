@@ -7,15 +7,18 @@ class Spy {
     this._setOffsets();
     this.buffer = {start: 0, end: this.offsets.length}
     this.cb = cb;
+
+    this.ticking = false;
   }
 
-  tick() {
+  update() {
+    this.ticking = false;
     this.windowOffset = window.pageYOffset;
 
     for (var i = this.buffer.start; i < this.buffer.end; i++) {
       if (this.windowOffset > this.offsets[i].start && this.windowOffset < this.offsets[i].end) {
 
-        // this.buffer = this._setBuffer(i);
+        this.buffer = this._setBuffer(i);
 
         if (this.windowOffset > this.windowBuffer)
           this.cb('down');
@@ -27,9 +30,19 @@ class Spy {
     this.windowBuffer = this.windowOffset;
   }
 
-
   run() {
-    window.addEventListener('scroll', this.tick.bind(this), false);
+    window.addEventListener('scroll', this.onScroll.bind(this), false);
+  }
+
+  onScroll() {
+    this.requestTick();
+  }
+
+  requestTick() {
+    if(!this.ticking)
+      requestAnimationFrame(this.update.bind(this));
+
+    this.ticking = true;
   }
 
   _setOffsets() {
@@ -49,8 +62,10 @@ class Spy {
     return {start: start, end: end}
   }
 }
-var cb = function(dir) {
+
+
+var t = new Spy(document.querySelectorAll('.red'), function(dir) {
   console.log('hit red section in the direction of ' + dir);
-}
-var t = new Spy(document.querySelectorAll('.red'), cb);
+});
+
 t.run()

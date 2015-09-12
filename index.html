@@ -74,5 +74,10 @@
   <article class="red"></article>
 
   <script src="bundle.js"></script>
+  <script>var t = new Spy(document.querySelectorAll('.red'), function(dir) {
+    console.log('hit red section in the direction of ' + dir);
+  });
+
+  t.run()</script>
 </body>
 </html>

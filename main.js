@@ -1,10 +1,8 @@
 class Spy {
-  constructor(selector, cb) {
+  constructor(selector, cb, topOffset) {
     this.offsets = [];
-    this.selector = selector;
-    this.windowOffset, this.lastScroll, this.windowBuffer = window.pageYOffset;
-    this.ticking = false;
-    this._setOffsets();
+    this.windowOffset, this.windowBuffer = window.pageYOffset;
+    this._setOffsets(selector);
     this.buffer = {start: 0, end: this.offsets.length}
     this.cb = cb;
 
@@ -12,22 +10,20 @@ class Spy {
   }
 
   update() {
-    this.ticking = false;
     this.windowOffset = window.pageYOffset;
-
     for (var i = this.buffer.start; i < this.buffer.end; i++) {
       if (this.windowOffset > this.offsets[i].start && this.windowOffset < this.offsets[i].end) {
 
         this.buffer = this._setBuffer(i);
 
-        if (this.windowOffset > this.windowBuffer)
-          this.cb('down');
-        else
+        this.windowOffset > this.windowBuffer ?
+          this.cb('down') :
           this.cb('up');
       }
     }
 
     this.windowBuffer = this.windowOffset;
+    this.ticking = false;
   }
 
   run() {
@@ -39,33 +35,26 @@ class Spy {
   }
 
   requestTick() {
-    if(!this.ticking)
+    if(!this.ticking) {
       requestAnimationFrame(this.update.bind(this));
-
-    this.ticking = true;
+      this.ticking = true;
+    }
   }
 
-  _setOffsets() {
-    for (var i = 0; i < this.selector.length; i++) {
-      let o = this.selector[i].getBoundingClientRect();
+  _setOffsets(selector) {
+    for (var i = 0; i < selector.length; i++) {
+      let o = selector[i].getBoundingClientRect();
       let start = window.pageYOffset + o.top;
       this.offsets.push({start: start, end: start + o.height});
     };
   }
 
   _setBuffer(i) {
-    var start = i - 2;
+    let start = i - 2;
+    let end = i + 2;
     if (start < 0) start = 0;
-
-    var end = i + 2;
     if (end > this.offsets.length) end = this.offsets.length;
+
     return {start: start, end: end}
   }
 }
-
-
-var t = new Spy(document.querySelectorAll('.red'), function(dir) {
-  console.log('hit red section in the direction of ' + dir);
-});
-
-t.run()

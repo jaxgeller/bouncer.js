@@ -4,13 +4,14 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "compile": "watchify -t babelify main.js -o bundle.js"
+    "compile": "watchify -t babelify -t uglifyify main.js -o bundle.js"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "babelify": "^6.3.0",
     "browserify": "^11.0.1",
+    "uglifyify": "^3.0.1",
     "watchify": "^3.4.0"
   }
 }

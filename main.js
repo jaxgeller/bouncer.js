@@ -1,5 +1,5 @@
 class Bouncer {
-  constructor(selector, cb, topOffset) {
+  constructor(selector, cb) {
     this.offsets = [];
     this.windowOffset, this.windowBuffer = window.pageYOffset;
     this._setOffsets(selector);

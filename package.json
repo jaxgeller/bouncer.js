@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "compile": "watchify -t babelify -t uglifyify main.js -o bundle.js"
+    "build": "watchify -t babelify -t uglifyify main.js -o bundle.js"
   },
   "author": "",
   "license": "MIT",

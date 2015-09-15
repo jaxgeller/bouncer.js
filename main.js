@@ -31,10 +31,6 @@ class Bouncer {
   }
 
   onScroll() {
-    this.requestTick();
-  }
-
-  requestTick() {
     if(!this.ticking) {
       requestAnimationFrame(this.update.bind(this));
       this.ticking = true;
@@ -58,3 +54,9 @@ class Bouncer {
     return {start: start, end: end}
   }
 }
+
+let b = new Bouncer(document.querySelectorAll('.red'), function(dir) {
+  console.log(dir)
+});
+
+b.run();

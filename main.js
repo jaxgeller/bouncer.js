@@ -1,5 +1,5 @@
-class Bouncer {
-  constructor(selector, cb, offset) {
+export default class Bouncer {
+  constructor(selector, cb, offset, whileIn) {
     this.offsets = [];
     this.windowOffset, this.windowBuffer = window.pageYOffset;
     this._setOffsets(selector);
@@ -57,12 +57,3 @@ class Bouncer {
     return {start: start, end: end}
   }
 }
-
-let b = new Bouncer(
-  document.querySelectorAll('.red'),
-  function(dir) {
-    console.log(dir)
-  }
-);
-
-b.run();

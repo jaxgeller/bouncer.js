@@ -6,7 +6,7 @@ class Bouncer {
     this.buffer = {start: 0, end: this.offsets.length}
     this.cb = cb;
 
-    this.offset = offset || 0;
+    this.offset = (offset / 100) * window.innerHeight || 0;
 
     this.ticking = false;
   }
@@ -62,8 +62,7 @@ let b = new Bouncer(
   document.querySelectorAll('.red'),
   function(dir) {
     console.log(dir)
-  },
-  100
+  }
 );
 
 b.run();

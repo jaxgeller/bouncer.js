@@ -1,16 +1,19 @@
 class Bouncer {
-  constructor(selector, cb) {
+  constructor(selector, cb, offset) {
     this.offsets = [];
     this.windowOffset, this.windowBuffer = window.pageYOffset;
     this._setOffsets(selector);
     this.buffer = {start: 0, end: this.offsets.length}
     this.cb = cb;
 
+    this.offset = offset || 0;
+
     this.ticking = false;
   }
 
   update() {
-    this.windowOffset = window.pageYOffset;
+    this.windowOffset = window.pageYOffset + this.offset;
+
     for (var i = this.buffer.start; i < this.buffer.end; i++) {
       if (this.windowOffset > this.offsets[i].start && this.windowOffset < this.offsets[i].end) {
 
@@ -55,8 +58,12 @@ class Bouncer {
   }
 }
 
-let b = new Bouncer(document.querySelectorAll('.red'), function(dir) {
-  console.log(dir)
-});
+let b = new Bouncer(
+  document.querySelectorAll('.red'),
+  function(dir) {
+    console.log(dir)
+  },
+  100
+);
 
 b.run();

@@ -9,15 +9,16 @@ export default class Bouncer {
     this.offset = (offset / 100) * window.innerHeight || 0;
 
     this.ticking = false;
+
+    window.addEventListener('scroll', this.onScroll.bind(this), false);
   }
 
   update() {
     this.windowOffset = window.pageYOffset + this.offset;
 
-    for (var i = this.buffer.start; i < this.buffer.end; i++) {
-      if (this.windowOffset > this.offsets[i].start && this.windowOffset < this.offsets[i].end) {
-
-        this.buffer = this._setBuffer(i);
+    for (let i = this.buffer.start; i < this.buffer.end; i++) {
+      if (this._checkPosition(i)) {
+        // this.buffer = this._setBuffer(i);
 
         this.windowOffset > this.windowBuffer ?
           this.cb('down') :
@@ -29,10 +30,6 @@ export default class Bouncer {
     this.ticking = false;
   }
 
-  run() {
-    window.addEventListener('scroll', this.onScroll.bind(this), false);
-  }
-
   onScroll() {
     if(!this.ticking) {
       requestAnimationFrame(this.update.bind(this));
@@ -41,7 +38,7 @@ export default class Bouncer {
   }
 
   _setOffsets(selector) {
-    for (var i = 0; i < selector.length; i++) {
+    for (let i = 0; i < selector.length; i++) {
       let o = selector[i].getBoundingClientRect();
       let start = window.pageYOffset + o.top;
       this.offsets.push({start: start, end: start + o.height});
@@ -55,5 +52,10 @@ export default class Bouncer {
     if (end > this.offsets.length) end = this.offsets.length;
 
     return {start: start, end: end}
+  }
+
+  _checkPosition(i) {
+    return this.windowOffset > this.offsets[i].start
+        && this.windowOffset < this.offsets[i].end;
   }
 }

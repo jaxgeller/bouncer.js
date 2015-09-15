@@ -10,6 +10,10 @@ export default class Bouncer {
 
     this.ticking = false;
 
+    this.whileIn = whileIn || true;
+    this.canReport = true;
+
+    this.whileIn = false
     window.addEventListener('scroll', this.onScroll.bind(this), false);
   }
 
@@ -17,12 +21,23 @@ export default class Bouncer {
     this.windowOffset = window.pageYOffset + this.offset;
 
     for (let i = this.buffer.start; i < this.buffer.end; i++) {
-      if (this._checkPosition(i)) {
-        // this.buffer = this._setBuffer(i);
+      if (this.whileIn) {
+        if (this._checkPosition(i)) {
+          // this.buffer = this._setBuffer(i);
 
-        this.windowOffset > this.windowBuffer ?
-          this.cb('down') :
-          this.cb('up');
+          this.windowOffset > this.windowBuffer ?
+            this.cb('down') :
+            this.cb('up');
+        }
+      } else if (this.canReport){
+        if (this._checkPosition(i)) {
+
+          this.windowOffset > this.windowBuffer ?
+            this.cb('down') :
+            this.cb('up');
+
+          this.canReport = false;
+        }
       }
     }
 

@@ -1,41 +1,23 @@
 export default class Bouncer {
-  constructor(selector, cb, offset, whileIn) {
-    this.offsets = [];
-    this.windowOffset, this.windowBuffer = window.pageYOffset;
-    this._setOffsets(selector);
-    this.cb = cb;
-
-    this.offset = (offset / 100) * window.innerHeight || 0;
+  constructor(opts, callback) {
+    this.sections = this._setSections(opts.selector);
+    this.callback = callback;
 
     this.ticking = false;
+    this.windowOffset, this.windowBuffer = window.pageYOffset;
+    this.offset = (opts.offset / 100) * window.innerHeight || 0;
 
-    this.whileIn = whileIn || true;
-    this.canReport = true;
-
-    this.whileIn = true
     window.addEventListener('scroll', this.onScroll.bind(this), false);
   }
 
   update() {
     this.windowOffset = window.pageYOffset + this.offset;
 
-    for (let i = this.buffer.start; i < this.buffer.end; i++) {
-      if (this.whileIn) {
-        if (this._checkPosition(i)) {
-
-          this.windowOffset > this.windowBuffer ?
-            this.cb('down') :
-            this.cb('up');
-        }
-      } else if (this.canReport){
-        if (this._checkPosition(i)) {
-
-          this.windowOffset > this.windowBuffer ?
-            this.cb('down') :
-            this.cb('up');
-
-          this.canReport = false;
-        }
+    for (let i = 0; i < this.sections.length; i++) {
+      if (this._checkPosition(i)) {
+        this.windowOffset > this.windowBuffer ?
+          this.callback('down') :
+          this.callback('up');
       }
     }
 
@@ -50,16 +32,20 @@ export default class Bouncer {
     }
   }
 
-  _setOffsets(selector) {
+  _checkPosition(i) {
+    return this.windowOffset > this.sections[i].start
+        && this.windowOffset < this.sections[i].end;
+  }
+
+  _setSections(selector) {
+    let holder = [];
+
     for (let i = 0; i < selector.length; i++) {
       let o = selector[i].getBoundingClientRect();
       let start = window.pageYOffset + o.top;
-      this.offsets.push({start: start, end: start + o.height});
+      holder.push({start: start, end: start + o.height});
     };
-  }
 
-  _checkPosition(i) {
-    return this.windowOffset > this.offsets[i].start
-        && this.windowOffset < this.offsets[i].end;
+    return holder;
   }
 }

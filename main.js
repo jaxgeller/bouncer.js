@@ -25,13 +25,19 @@ export default class Bouncer {
     }
   }
 
-
   onScroll() {
     if(!this.ticking) {
       requestAnimationFrame(this.update.bind(this));
       this.ticking = true;
     }
   }
+
+  _reportDirection() {
+    this.windowOffset > this.windowBuffer ?
+      this.callback('down') :
+      this.callback('up');
+  }
+
   checkFireOnce(i) {
     if (this._checkPosition(i)) {
       if (this.canFire) {
@@ -42,6 +48,7 @@ export default class Bouncer {
       this.canFire = true;
     }
   }
+
   checkFire(i) {
     if (this._checkPosition(i))
       this._reportDirection()
@@ -50,12 +57,6 @@ export default class Bouncer {
   _checkPosition(i) {
     return this.windowOffset > this.sections[i].start
         && this.windowOffset < this.sections[i].end;
-  }
-
-  _reportDirection() {
-    this.windowOffset > this.windowBuffer ?
-      this.callback('down') :
-      this.callback('up');
   }
 
   _setSections(selector) {

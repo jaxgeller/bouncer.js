@@ -5,9 +5,14 @@ Lets you know when elements are in view. It's fast.
 ### How to use
 
 ```javascript
-var elCheck = document.querySelectorAll('.my-section-i-want-check');
-var b = new Bouncer(elCheck, function(direction) {
-  console.log(direction);
+var opts = {
+  selector: document.querySelectorAll('.elementOrElementstoCheck'),
+  offset: '100px'
+  fireOnce: false
+}
+
+var b = new Bouncer(opts, function(direction) {
+  alert(direction);
 });
 ```
 
@@ -16,3 +21,14 @@ var b = new Bouncer(elCheck, function(direction) {
 * Alerts both entering selectors, and while in selectors.
 * More lightweight.
 * Written in vanilla javascript; supports everything.
+
+
+### Defaults
+
+```javascript
+var opts = {
+  selector: null,
+  offset: 0
+  fireOnce: false
+}
+```

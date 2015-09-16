@@ -5,7 +5,7 @@ export default class Bouncer {
 
     this.ticking = false;
     this.windowOffset, this.windowBuffer = window.pageYOffset;
-    this.offset = (opts.offset / 100) * window.innerHeight || 0;
+    this.offset = this._setOffset(opts.offset);
 
     this.fireOnce = opts.fireOnce || false;
     window.addEventListener('scroll', this.onScroll.bind(this), false);
@@ -32,7 +32,6 @@ export default class Bouncer {
       this.ticking = true;
     }
   }
-
   checkFireOnce(i) {
     if (this._checkPosition(i)) {
       if (this.canFire) {
@@ -47,7 +46,6 @@ export default class Bouncer {
     if (this._checkPosition(i))
       this._reportDirection()
   }
-
 
   _checkPosition(i) {
     return this.windowOffset > this.sections[i].start
@@ -70,5 +68,15 @@ export default class Bouncer {
     };
 
     return holder;
+  }
+
+  _setOffset(offset) {
+    if (!offset)
+      return 0;
+
+    if (offset.indexOf('px') > -1)
+      return parseInt(offset);
+
+    return (offset / 100) * window.innerHeight;
   }
 }
